@@ -6,7 +6,7 @@ Vous devez installer jdk8, maven et ajouter maven à votre variable d'environnem
 Installez et configuer maven (https://maven.apache.org/install.html).
 
 Vous devez utiliser STS (Spring Tools Suite) pour l'importer après l'avoir cloné.
-Avant de l'importer dans STS vous devez créer la base de données en local.
+Avant de l'importer dans STS vous devez créer la base de données en local.<br />
 Pour celà allez dans le dossier sr/main/resources puis exécutez le script du fichier spring-base.sql
 avec un utilitaire comme phpMyAdmin ou Navicat.
 
@@ -31,12 +31,12 @@ Envoi de mail
 Pour envoyer des mails aux utilisateurs vous devez ajouter des paramètres de connexion gmail 
 au fichier application.properties.
 
-Activer less secure apps avec https://myaccount.google.com/lesssecureapps?pli=1 .
-  #serveur de mail  
-  smtp.mail.host=smtp.gmail.com 
-  smtp.mail.port=587 
-  smtp.mail.username=your_gmail_username 
-  smtp.mail.password=your_gmail_password 
+Activer less secure apps avec https://myaccount.google.com/lesssecureapps?pli=1. <br />
+  #serveur de mail <br /> 
+  smtp.mail.host=smtp.gmail.com <br />
+  smtp.mail.port=587  <br />
+  smtp.mail.username=your_gmail_username  <br />
+  smtp.mail.password=your_gmail_password <br />
 
 Modifier le username et le password de ce fichier .
 
@@ -57,7 +57,7 @@ Comment lancez le projet ?
 
 Allez à la racine du dossier du projet .
 
-Rassurez vous que les deux commandes fonctionnent correctement.
-  mvn clean install -U (à la fin :  BUILD SUCCESS).
+Rassurez vous que les deux commandes fonctionnent correctement. <br />
+  mvn clean install -U (à la fin :  BUILD SUCCESS).<br />
   mvn spring-boot:run (Tomcat started on port(s): 8080 (http)) .
   
