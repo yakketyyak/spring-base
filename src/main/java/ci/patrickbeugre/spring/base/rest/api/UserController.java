@@ -3,7 +3,7 @@
  * Java transformer for entity table user 
  * Created on 23 mai 2017 ( Time 18:24:48 )
  * Generator tool : Telosys Tools Generator ( version 2.1.1 )
- * Copyright 2017 Savoir Faire Linux. All Rights Reserved.
+ * Copyright 2017 patrickbeugre. All Rights Reserved.
  */
 
 package ci.patrickbeugre.spring.base.rest.api;
