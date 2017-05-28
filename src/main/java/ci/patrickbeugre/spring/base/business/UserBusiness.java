@@ -579,7 +579,7 @@ public class UserBusiness implements IBasicBusiness<Request, Response> {
 				//set mail to user
 				Map<String, String> from=new HashMap<>();
 	        	from.put("email", paramsUtils.getSmtpUsername());
-	        	from.put("user", "SMILE");
+	        	from.put("user", "PATRICK BEUGRE");
 	        	//recipients
 	        	List<Map<String, String>> toRecipients = new ArrayList<Map<String, String>>();
 	        	Map<String, String> recipient = new HashMap<String, String>();
