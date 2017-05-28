@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <databases defaultId="0" maxId="4">
-<db dialect="org.hibernate.dialect.MySQLDialect" driver="com.mysql.jdbc.Driver" id="0" isolationLevel="" name="MYSQL_hosting" poolSize="1" typeName="MYSQL" url="jdbc:mysql://10.200.0.3:3306/hosting">
+<db dialect="org.hibernate.dialect.MySQLDialect" driver="com.mysql.jdbc.Driver" id="0" isolationLevel="" name="MYSQL_hosting" poolSize="1" typeName="MYSQL" url="jdbc:mysql://localhost:8889/spring-base">
 <property name="user" value="root"/>
 <property name="password" value="root"/>
 <metadata catalog="" schema="%" table-name-exclude="" table-name-include="" table-name-pattern="%" table-types="TABLE"/>
