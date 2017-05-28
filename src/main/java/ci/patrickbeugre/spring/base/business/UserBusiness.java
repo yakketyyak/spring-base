@@ -519,10 +519,7 @@ public class UserBusiness implements IBasicBusiness<Request, Response> {
 
 				// Renseigner les données à retourner dans la reponse
 				response.setHasError(Boolean.FALSE);
-				Status status=new Status();
-				status.setCode(StatusCode.SUCCESS);
-				status.setMessage(StatusMessage.SUCCESS);
-				response.setStatus(status);
+				response.setStatus(functionalError.SUCCESS("", locale));
 
 			slf4jLogger.info("--------end method resetPassword--------");
 		} catch (PermissionDeniedDataAccessException e) {
@@ -603,10 +600,7 @@ public class UserBusiness implements IBasicBusiness<Request, Response> {
 					userRepository.save(user);
 
 					// Renseigner les données à retourner dans la reponse
-					Status status=new Status();
-					status.setCode(StatusCode.SUCCESS);
-					status.setMessage(StatusMessage.SUCCESS);
-					response.setStatus(status);
+					response.setStatus(functionalError.SUCCESS("", locale));
 	        	}else {
 	        		response.setStatus(functionalError.SAVE_FAIL("", locale));
 	        		return response;
@@ -672,10 +666,7 @@ public class UserBusiness implements IBasicBusiness<Request, Response> {
 
 				// Renseigner les données à retourner dans la reponse
 				response.setHasError(Boolean.FALSE);
-				Status status=new Status();
-				status.setCode(StatusCode.SUCCESS);
-				status.setMessage(StatusMessage.SUCCESS);
-				response.setStatus(status);
+				response.setStatus(functionalError.SUCCESS("", locale));
 
 			slf4jLogger.info("--------end method forgotPasswordValidation--------");
 		} catch (PermissionDeniedDataAccessException e) {
@@ -726,12 +717,13 @@ public class UserBusiness implements IBasicBusiness<Request, Response> {
 				response.setItemsUser(itemsDto);
 				response.setCount(userRepository.count(request, em));
 				response.setHasError(false);
+				
 			} else {
 				response.setStatus(functionalError.DATA_EMPTY("user", locale));
 				response.setHasError(false);
 				return response;
 			}
-
+			response.setStatus(functionalError.SUCCESS("", locale));
 			slf4jLogger.info("----end-----");
 		} catch (PermissionDeniedDataAccessException e) {
 			exceptionUtils.PERMISSION_DENIED_DATA_ACCESS_EXCEPTION(response, locale, e);
