@@ -30,10 +30,10 @@ Pour envoyer des mails aux utilisateurs vous devez ajouter des paramètres de co
 au fichier application.properties.
 
 Activer less secure apps avec https://myaccount.google.com/lesssecureapps?pli=1
-#serveur de mail .
-smtp.mail.host=smtp.gmail.com .
-smtp.mail.port=587 .
-smtp.mail.username=your_gmail_username .
-smtp.mail.password=your_gmail_password .
+  #serveur de mail  
+  smtp.mail.host=smtp.gmail.com 
+  smtp.mail.port=587 
+  smtp.mail.username=your_gmail_username 
+  smtp.mail.password=your_gmail_password 
 
 Modifier le username et le password de ce fichier .
