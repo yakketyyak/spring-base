@@ -23,3 +23,17 @@ Utilisation de la base de données
   Le dossier src/main/resources contient trois fichiers .properties (application-dev, application-prod, application-local).
   En fonction de votre zone de travail (local, production ou developpement) vous précisez le profil actif à l'aide
   de la ligne spring.profiles.active=local de application.properties
+  
+Envoi de mail
+
+Pour envoyer des mails aux utilisateurs vous devez ajouter des paramètres de connexion gmail 
+au fichier application.properties.
+
+Activer less secure apps avec https://myaccount.google.com/lesssecureapps?pli=1
+#serveur de mail
+smtp.mail.host=smtp.gmail.com
+smtp.mail.port=587
+smtp.mail.username=your_gmail_username
+smtp.mail.password=your_gmail_password
+
+Modifier le username et le password de ce fichier
