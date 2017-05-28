@@ -23,3 +23,30 @@ Utilisation de la base de données
   Le dossier src/main/resources contient trois fichiers .properties (application-dev, application-prod, application-local).
   En fonction de votre zone de travail (local, production ou developpement) vous précisez le profil actif à l'aide
   de la ligne spring.profiles.active=local de application.properties
+  
+Envoi de mail
+
+Pour envoyer des mails aux utilisateurs vous devez ajouter des paramètres de connexion gmail 
+au fichier application.properties.
+
+Activer less secure apps avec https://myaccount.google.com/lesssecureapps?pli=1
+  #serveur de mail  
+  smtp.mail.host=smtp.gmail.com 
+  smtp.mail.port=587 
+  smtp.mail.username=your_gmail_username 
+  smtp.mail.password=your_gmail_password 
+
+Modifier le username et le password de ce fichier .
+
+Nous avons inclus l'internalisation des messages d'erreurs (Anglais, Français).
+
+Pour celà vous verrez trois fichiers errorMessage.properties, errorMessage_en.properties et errorMessage_fr.properties.
+
+La langue par défaut est le français (errorMessage.properties)
+Comme nous l'avons fait vous pouvez ajouter d'autres langues .
+Il suffit de créer un fichier errorMessage_(code_langue).properties (https://fr.wikipedia.org/wiki/Liste_des_codes_ISO_639-1) puis vous traduisez les messages dans la langue choisie.
+
+Pour changer de langue avec la collection Postman , Mettez dans le header le mot lang comme valeur le code de langue.
+
+Exemple lang en pour anglais
+Vous trouverez la capture d'une image illustrant mes dires dans src/main/resources.
