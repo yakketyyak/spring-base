@@ -1,0 +1,64 @@
+
+package ${target.javaPackageFromFolder(${SRC})};
+
+import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import ${ROOT_PKG}.helper.dto.*;
+
+@XmlRootElement
+@JsonInclude(Include.NON_NULL)
+public class Request extends RequestBase {
+	
+#foreach( $entity in $selectedEntities )
+#set ( $padderString = "" )
+#set( $dtoBean = ${entity.name} + "Dto" )
+#set( $dtosBean = "List<" + ${entity.name} + "Dto>" )
+#set( $data = "data" + ${entity.name} )
+#set( $datas = "datas" + ${entity.name} )
+	protected $padderString.format("%-55s%-30s%-22s", ${dtoBean}, ${data}, ";")
+	protected $padderString.format("%-55s%-30s%-22s", ${dtosBean}, ${datas}, ";")
+#end
+
+	//----------------------------------------------------------------------
+    // GETTER(S) & SETTER(S) FOR DATA FIELDS
+    //----------------------------------------------------------------------
+
+#foreach( $entity in $selectedEntities )
+#set( $dtoBean = ${entity.name} + "Dto" )
+#set( $data = "data" + ${entity.name} )
+#set( $datas = "datas" + ${entity.name} )
+	/**
+     * Get the "$data" field value
+     * @return the field value
+     */
+	public ${dtoBean} get$fn.capitalize($data)() {
+		return ${data};
+	}
+	/**
+     * Set the "$data" field value
+     * @param $data
+     */
+	public void set$fn.capitalize($data)(${dtoBean} ${data}) {
+		this.${data} = ${data};
+	}
+	/**
+     * Get the "$datas" field value
+     * @return the field value
+     */
+	public List<${dtoBean}> get$fn.capitalize($datas)() {
+		return ${datas};
+	}
+	/**
+     * Set the "$datas" field value
+     * @param $datas
+     */
+	public void set$fn.capitalize($datas)(List<${dtoBean}> ${datas}) {
+		this.${datas} = ${datas};
+	} 
+
+#end
+
+}

@@ -1,0 +1,589 @@
+##----------------------------------------------------------------------------------------------------
+## JPA beans suffix
+
+#set ( $dto = ${entity.name} + "Dto" )
+#set ( $businessName = ${entity.name} + "Business" )
+#set ( $repositoryName = ${entity.name} + "Repository" )
+#set ( $transformerName = ${entity.name} + "Transformer" )
+/*
+ * Java transformer for entity table ${entity.databaseTable} 
+ * Created on $today.date ( Time $today.time )
+ * Generator tool : $generator.name ( version $generator.version )
+ * Copyright 2017 Savoir Faire Linux. All Rights Reserved.
+ */
+
+package ${target.javaPackageFromFolder(${SRC})};
+
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import javax.persistence.PersistenceContext;
+import javax.persistence.EntityManager;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.dao.PermissionDeniedDataAccessException;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import ${ROOT_PKG}.helper.dto.*;
+import ${ROOT_PKG}.helper.dto.transformer.*;
+import ${ROOT_PKG}.helper.contrat.*;
+import ${ENTITY_PKG}.*;
+import ${ROOT_PKG}.helper.*;
+import ${ROOT_PKG}.dao.repository.*;
+
+/**
+BUSINESS for table "${entity.databaseTable}"
+ * 
+ * @author SFL Back-End developper
+ *
+ */
+@Component
+public class ${businessName} implements IBasicBusiness<Request, Response> {
+
+#set($listOfRepository = [])
+
+	private Response response;
+	
+	@Autowired
+	private ${repositoryName} $fn.uncapitalize(${repositoryName});
+#foreach( $link in $entity.selectedLinks )
+#if($link.isCardinalityManyToOne() || $link.isCardinalityOneToOne())
+#set($currentRepository =  ${fn.uncapitalize($link.fieldName)} + "Repository")
+#if($listOfRepository.indexOf($currentRepository) == -1)
+#set($tmp = $listOfRepository.add($currentRepository))
+	@Autowired
+	private ${link.fieldType}Repository $currentRepository;
+#end
+#end
+#if($link.isCardinalityOneToMany() || $link.isCardinalityManyToMany())
+#set( $entityFk = $link.targetEntity)
+#set($currentRepository =  ${fn.uncapitalize($entityFk.name)} + "Repository")
+#if($listOfRepository.indexOf($currentRepository) == -1)
+#set($tmp = $listOfRepository.add($currentRepository))
+	@Autowired
+	private ${entityFk.name}Repository ${fn.uncapitalize($entityFk.name)}Repository;
+#end
+#end
+#end
+	
+	@Autowired
+	private FunctionalError functionalError;
+	
+	@Autowired
+	private TechnicalError technicalError;
+
+	@Autowired
+	private ExceptionUtils exceptionUtils;
+	
+	@PersistenceContext
+	private EntityManager em;
+	
+	private Logger slf4jLogger;
+
+	private SimpleDateFormat dateFormat;
+
+	public ${businessName}() {
+		dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		slf4jLogger = LoggerFactory.getLogger(getClass());
+	}
+
+#if( ${businessName} == "TenancyBusiness")
+	public TenancyDto getTenant(String code) throws ParseException {
+		Tenancy entity = tenancyRepository.findByCode(code);
+		return TenancyTransformer.INSTANCE.toDto(entity);
+	}
+#end
+	
+	/**
+	 * create ${entity.name} by using ${dto} as object.
+	 * 
+	 * @param request
+	 * @return response
+	 * 
+	 */
+	@SuppressWarnings("unused")
+	@Transactional(rollbackFor = { RuntimeException.class, Exception.class })
+	@Override
+	public Response create(Request request, Locale locale)  {
+		slf4jLogger.info("----begin create-----");
+		
+		response = new Response();
+		
+		try {
+			List<${entity.name}> items = new ArrayList<${entity.name}>();
+			
+			for (${dto} dto : request.getDatas${entity.name}()) {
+				// Definir les parametres obligatoires
+				Map<String, Object> fieldsToVerify = new HashMap<String, Object>();
+#foreach( $field in $entity.keyAttributes )
+#if( $field.isStringType() )
+				fieldsToVerify.put("${field.name}", dto.${field.getter}());
+#end
+#end
+#foreach( $field in $entity.getAttributesByCriteria( $const.NOT_KEY ) )
+#if( $field.name != "createdAt" && $field.name != "updatedAt" && $field.name != "isDeleted")
+				fieldsToVerify.put("${field.name}", dto.${field.getter}());
+#end
+#end
+				if (!Validate.RequiredValue(fieldsToVerify).isGood()) {
+					response.setStatus(functionalError.FIELD_EMPTY(Validate.getValidate().getField(), locale));
+					response.setHasError(true);
+					return response;
+				}
+##
+##				// Controler le type des champs renseignes
+##				Map<String, Object> typefieldsToVerify = new HashMap<String, Object>();
+###foreach( $field in $entity.keyAttributes )
+###if( $field.isStringType() )
+##				typefieldsToVerify.put("${field.name}", dto.${field.getter}());
+###end
+###end
+###foreach( $field in $entity.getAttributesByCriteria( $const.NOT_KEY ) )
+###if( $field.name != "createdAt" && $field.name != "updatedAt" && $field.name != "isDeleted")
+##				typefieldsToVerify.put("${field.name}", dto.${field.getter}());
+###end
+###end
+##				if (!Validate.CorrectTypedValue(typefieldsToVerify).isGood()) {
+##					response.setStatus(functionalError.TYPE_NOT_CORRECT(Validate.getValidate().getField(), locale));
+##					response.setHasError(true);
+##					return response;
+##				}
+
+				// Verify if ${fn.uncapitalize($entity.name)} to insert do not exist
+				${entity.name} existingEntity = null;
+#foreach( $field in $entity.keyAttributes )
+#if( $field.isStringType() )
+				existingEntity = ${fn.uncapitalize($repositoryName)}.findBy$fn.capitalize(${field.name})(dto.${field.getter}()#foreach( $attrib in $entity.nonKeyAttributes )#if( ${attrib.name} == "isDeleted"), false#end#end);
+				if (existingEntity != null) {
+					response.setStatus(functionalError.DATA_EXIST("${fn.uncapitalize($entity.name)} -> " + dto.${field.getter}(), locale));
+					response.setHasError(true);
+					return response;
+				}
+#end
+#if( !$field.isStringType() )
+				//TODO: add/replace by the best method
+				if (existingEntity != null) {
+					response.setStatus(functionalError.DATA_EXIST("${fn.uncapitalize($entity.name)} -> " + dto.${field.getter}(), locale));
+					response.setHasError(true);
+					return response;
+				}
+#end
+#end
+#foreach( $field in $entity.attributes )
+#if( $field.name == "code" || $field.name == "name")
+				existingEntity = ${fn.uncapitalize($repositoryName)}.findBy$fn.capitalize($field.name)(dto.${field.getter}()#foreach( $attrib in $entity.nonKeyAttributes )#if( ${attrib.name} == "isDeleted"), false#end#end);
+				if (existingEntity != null) {
+					response.setStatus(functionalError.DATA_EXIST("${fn.uncapitalize($entity.name)} -> " + dto.${field.getter}(), locale));
+					response.setHasError(true);
+					return response;
+				}
+#end
+#end
+
+#foreach( $link in $entity.selectedLinks )
+#if($link.isCardinalityManyToOne() || $link.isCardinalityOneToOne())
+#set( $entityFk = $link.targetEntity)
+#foreach($joinColumn in $link.joinColumns)
+#set( $refFieldName = $entity.getAttributeByColumnName($joinColumn.name) )
+#end
+				// Verify if ${fn.uncapitalize($link.fieldName)} exist
+				${link.fieldType} existing$fn.capitalize(${link.fieldName}) = ${fn.uncapitalize($link.fieldName)}Repository.findOne(dto.get${fn.capitalize($refFieldName.name)}());
+				if (existing$fn.capitalize(${link.fieldName}) == null) {
+					response.setStatus(functionalError.DATA_NOT_EXIST("${fn.uncapitalize($link.fieldName)} -> " + dto.get${fn.capitalize($refFieldName.name)}(), locale));
+					response.setHasError(true);
+					return response;
+				}
+#end
+#end
+				${entity.name} entityToSave = null;
+				entityToSave = ${transformerName}.INSTANCE.toEntity(dto#foreach($link in ${entity.selectedLinks})#if($link.isCardinalityManyToOne() || $link.isCardinalityOneToOne()), existing$fn.capitalize(${link.fieldName})#end#end);
+#foreach( $field in $entity.getAttributesByCriteria( $const.NOT_KEY, $const.NOT_IN_LINKS ))
+#if( $field.name == "createdAt" )
+				entityToSave.${field.setter}(Utilities.getCurrentDate());
+#end
+#if( $field.name == "updatedAt" )
+				entityToSave.${field.setter}(Utilities.getCurrentDate());
+#end
+#if( $field.name == "isDeleted" )
+				entityToSave.${field.setter}(false);
+#end
+#end
+				items.add(entityToSave);
+			}
+
+			if (!items.isEmpty()) {
+				List<${entity.name}> itemsSaved = null;
+				// inserer les donnees en base de donnees
+				itemsSaved = ${fn.uncapitalize($repositoryName)}.save((Iterable<${entity.name}>) items);
+				if (itemsSaved == null) {
+					response.setStatus(functionalError.SAVE_FAIL("${fn.uncapitalize($entity.name)}", locale));
+					response.setHasError(true);
+					return response;
+				}
+				List<${dto}> itemsDto = new ArrayList<${dto}>();
+				for (${entity.name} entity : itemsSaved) {
+					${dto} dto = getFullInfos(entity, locale);
+					if (dto == null) continue;
+					itemsDto.add(dto);
+				}
+				response.setItems${entity.name}(itemsDto);
+				response.setHasError(false);
+			}
+
+			slf4jLogger.info("----end-----");
+		} catch (PermissionDeniedDataAccessException e) {
+			exceptionUtils.PERMISSION_DENIED_DATA_ACCESS_EXCEPTION(response, locale, e);
+		} catch (DataAccessResourceFailureException e) {
+			exceptionUtils.DATA_ACCESS_RESOURCE_FAILURE_EXCEPTION(response, locale, e);
+		} catch (DataAccessException e) {
+			exceptionUtils.DATA_ACCESS_EXCEPTION(response, locale, e);
+		} catch (RuntimeException e) {
+			exceptionUtils.RUNTIME_EXCEPTION(response, locale, e);
+		} catch (Exception e) {
+			exceptionUtils.EXCEPTION(response, locale, e);
+		} finally {
+			if (response.isHasError() && response.getStatus() != null) {
+				slf4jLogger.info("Erreur| code: {} -  message: {}", response.getStatus().getCode(), response.getStatus().getMessage());
+				throw new RuntimeException(response.getStatus().getCode() + ";" + response.getStatus().getMessage());
+			}
+		}
+		return response;
+	}
+
+	/**
+	 * update ${entity.name} by using ${dto} as object.
+	 * 
+	 * @param request
+	 * @return response
+	 * 
+	 */
+	@SuppressWarnings("unused")
+	@Transactional(rollbackFor = { RuntimeException.class, Exception.class })
+	@Override
+	public Response update(Request request, Locale locale)  {
+		slf4jLogger.info("----begin update-----");
+		
+		response = new Response();
+		
+		try {
+			List<${entity.name}> items = new ArrayList<${entity.name}>();
+			
+			for (${dto} dto : request.getDatas${entity.name}()) {
+				// Definir les parametres obligatoires
+				Map<String, Object> fieldsToVerify = new HashMap<String, Object>();
+#foreach( $field in $entity.getAttributesByCriteria( $const.KEY, $const.NOT_IN_SELECTED_LINKS ) )
+#if( $field.name != "createdAt" && $field.name != "updatedAt" && $field.name != "isDeleted")
+				fieldsToVerify.put("${field.name}", dto.${field.getter}());
+#end
+#end
+				if (!Validate.RequiredValue(fieldsToVerify).isGood()) {
+					response.setStatus(functionalError.FIELD_EMPTY(Validate.getValidate().getField(), locale));
+					response.setHasError(true);
+					return response;
+				}
+##
+##				// Controler le type des champs renseignes
+##				Map<String, Object> typefieldsToVerify = new HashMap<String, Object>();
+###foreach( $field in $entity.getAttributesByCriteria( $const.KEY, $const.NOT_IN_SELECTED_LINKS ) )
+###if( $field.name != "createdAt" && $field.name != "updatedAt" && $field.name != "isDeleted")
+##				typefieldsToVerify.put("${field.name}", dto.${field.getter}());
+###end
+###end
+##				if (!Validate.CorrectTypedValue(typefieldsToVerify).isGood()) {
+##					response.setStatus(functionalError.TYPE_NOT_CORRECT(Validate.getValidate().getField(), locale));
+##					response.setHasError(true);
+##					return response;
+##				}
+
+				// Verifier si la ${fn.uncapitalize($entity.name)} existe
+				${entity.name} entityToSave = null;
+#foreach( $field in $entity.keyAttributes )
+				entityToSave = ${fn.uncapitalize($repositoryName)}.findBy$fn.capitalize(${field.name})(dto.${field.getter}()#foreach( $attrib in $entity.nonKeyAttributes )#if( ${attrib.name} == "isDeleted"), false#end#end);
+				if (entityToSave == null) {
+					response.setStatus(functionalError.DATA_NOT_EXIST("${fn.uncapitalize($entity.name)} -> " + dto.${field.getter}(), locale));
+					response.setHasError(true);
+					return response;
+				}
+#end
+
+#foreach( $link in $entity.selectedLinks )
+#if($link.isCardinalityManyToOne() || $link.isCardinalityOneToOne())
+#set( $entityFk = $link.targetEntity)
+#foreach($joinColumn in $link.joinColumns)
+#set( $refFieldName = $entity.getAttributeByColumnName($joinColumn.name) )
+#end
+				// Verify if ${fn.uncapitalize($link.fieldName)} exist
+				if (dto.get${fn.capitalize($refFieldName.name)}() != null && dto.get${fn.capitalize($refFieldName.name)}() > 0){
+					${link.fieldType} existing$fn.capitalize(${link.fieldName}) = ${fn.uncapitalize($link.fieldName)}Repository.findOne(dto.get${fn.capitalize($refFieldName.name)}());
+					if (existing$fn.capitalize(${link.fieldName}) == null) {
+						response.setStatus(functionalError.DATA_NOT_EXIST("${fn.uncapitalize($link.fieldName)} -> " + dto.get${fn.capitalize($refFieldName.name)}(), locale));
+						response.setHasError(true);
+						return response;
+					}
+					entityToSave.set$fn.capitalize(${link.fieldName})(existing$fn.capitalize(${link.fieldName}));
+				}
+#end
+#end
+#foreach( $field in $entity.getAttributesByCriteria( $const.NOT_KEY, $const.NOT_IN_LINKS ) )
+#if( $field.name != "createdAt" && $field.name != "updatedAt" && $field.name != "isDeleted")
+#if( $field.isNumberType() )
+				if (dto.${field.getter}()!= null && dto.${field.getter}() > 0) {
+					entityToSave.${field.setter}(dto.${field.getter}());
+				}
+#end
+#if( $field.isStringType() )
+				if (dto.${field.getter}()!= null && !dto.${field.getter}().isEmpty()) {
+					entityToSave.${field.setter}(dto.${field.getter}());
+				}
+#end
+#if( $field.isUtilDateType() )
+				if (dto.${field.getter}()!= null && !dto.${field.getter}().isEmpty()) {
+					entityToSave.${field.setter}(new SimpleDateFormat("dd/MM/yyyy").parse(dto.${field.getter}()));
+				}
+#end
+#if( !$field.isStringType() && !$field.isNumberType() && !$field.isUtilDateType() )
+				if (dto.${field.getter}()!= null) {
+					entityToSave.${field.setter}(dto.${field.getter}());
+				}
+#end
+#end		
+#end
+#foreach( $field in $entity.getAttributesByCriteria( $const.NOT_KEY, $const.NOT_IN_LINKS ))
+#if( $field.name == "updatedAt" )
+				entityToSave.${field.setter}(Utilities.getCurrentDate());
+#end
+#end
+				items.add(entityToSave);
+			}
+
+			if (!items.isEmpty()) {
+				List<${entity.name}> itemsSaved = null;
+				// maj les donnees en base
+				itemsSaved = ${fn.uncapitalize($repositoryName)}.save((Iterable<${entity.name}>) items);
+				if (itemsSaved == null) {
+					response.setStatus(functionalError.SAVE_FAIL("${fn.uncapitalize($entity.name)}", locale));
+					response.setHasError(true);
+					return response;
+				}
+				List<${dto}> itemsDto = new ArrayList<${dto}>();
+				for (${entity.name} entity : itemsSaved) {
+					${dto} dto = getFullInfos(entity, locale);
+					if (dto == null) continue;
+					itemsDto.add(dto);
+				}
+				response.setItems${entity.name}(itemsDto);
+				response.setHasError(false);
+			}
+
+			slf4jLogger.info("----end-----");
+		} catch (PermissionDeniedDataAccessException e) {
+			exceptionUtils.PERMISSION_DENIED_DATA_ACCESS_EXCEPTION(response, locale, e);
+		} catch (DataAccessResourceFailureException e) {
+			exceptionUtils.DATA_ACCESS_RESOURCE_FAILURE_EXCEPTION(response, locale, e);
+		} catch (DataAccessException e) {
+			exceptionUtils.DATA_ACCESS_EXCEPTION(response, locale, e);
+		} catch (RuntimeException e) {
+			exceptionUtils.RUNTIME_EXCEPTION(response, locale, e);
+		} catch (Exception e) {
+			exceptionUtils.EXCEPTION(response, locale, e);
+		} finally {
+			if (response.isHasError() && response.getStatus() != null) {
+				slf4jLogger.info("Erreur| code: {} -  message: {}", response.getStatus().getCode(), response.getStatus().getMessage());
+				throw new RuntimeException(response.getStatus().getCode() + ";" + response.getStatus().getMessage());
+			}
+		}
+		return response;
+	}
+
+	/**
+	 * delete ${entity.name} by using ${dto} as object.
+	 * 
+	 * @param request
+	 * @return response
+	 * 
+	 */
+	@SuppressWarnings("unused")
+	@Transactional(rollbackFor = { RuntimeException.class, Exception.class })
+	@Override
+	public Response delete(Request request, Locale locale)  {
+		slf4jLogger.info("----begin delete-----");
+		
+		response = new Response();
+		
+		try {
+			List<${entity.name}> items = new ArrayList<${entity.name}>();
+			
+			for (${dto} dto : request.getDatas${entity.name}()) {
+				// Definir les parametres obligatoires
+				Map<String, Object> fieldsToVerify = new HashMap<String, Object>();
+#foreach( $field in $entity.keyAttributes )
+				fieldsToVerify.put("${field.name}", dto.${field.getter}());
+#end
+				if (!Validate.RequiredValue(fieldsToVerify).isGood()) {
+					response.setStatus(functionalError.FIELD_EMPTY(Validate.getValidate().getField(), locale));
+					response.setHasError(true);
+					return response;
+				}
+
+				// Verifier si la ${fn.uncapitalize($entity.name)} existe
+				${entity.name} existingEntity = null;
+#foreach( $field in $entity.keyAttributes )
+				existingEntity = ${fn.uncapitalize($repositoryName)}.findBy$fn.capitalize(${field.name})(dto.${field.getter}()#foreach( $attrib in $entity.nonKeyAttributes )#if( ${attrib.name} == "isDeleted"), false#end#end);
+				if (existingEntity == null) {
+					response.setStatus(functionalError.DATA_NOT_EXIST("${fn.uncapitalize($entity.name)} -> " + dto.${field.getter}(), locale));
+					response.setHasError(true);
+					return response;
+				}
+#end
+
+				// --------------------------------------------------------------------------------------------
+				// --------------------------------- CHECK IF DATA IS USED
+				// --------------------------------------------------------------------------------------------
+
+#foreach( $link in $entity.selectedLinks )
+#if($link.isCardinalityOneToMany() || $link.isCardinalityManyToMany())
+#set( $entityFk = $link.targetEntity)
+#foreach( $field in $entityFk.getAttributesByCriteria($const.IN_SELECTED_LINKS))
+#if($field.referencedEntityType == $entity.name)
+#set($refFieldName = $field.name)
+#end
+#end
+				// ${fn.uncapitalize($entityFk.name)}
+				$link.fieldType $link.fieldName = ${fn.uncapitalize($entityFk.name)}Repository.findBy$fn.capitalize($refFieldName)(existingEntity.#foreach( $attrib in $entity.keyAttributes )$attrib.getter#end()#foreach( $attrib in $entityFk.nonKeyAttributes )#if( ${attrib.name} == "isDeleted"), false#end#end);
+				if ($link.fieldName != null && !${link.fieldName}.isEmpty()){
+					response.setStatus(functionalError.DATA_NOT_DELETABLE("(" + ${link.fieldName}.size() + ")", locale));
+					response.setHasError(true);
+					return response;
+				}
+#end
+#end
+
+
+#foreach( $field in $entity.getAttributesByCriteria( $const.NOT_KEY, $const.NOT_IN_LINKS ))
+#if( $field.name == "updatedAt" )
+				existingEntity.${field.setter}(Utilities.getCurrentDate());
+#end
+#if( $field.name == "isDeleted" )
+				existingEntity.${field.setter}(true);
+#end
+#end
+				items.add(existingEntity);
+			}
+
+			if (!items.isEmpty()) {
+				// supprimer les donnees en base
+#set($hasDeletedProp = "false")
+#foreach( $field in $entity.getAttributesByCriteria( $const.NOT_KEY, $const.NOT_IN_LINKS ))
+#if( $field.name == "isDeleted" )
+				${fn.uncapitalize($repositoryName)}.save((Iterable<${entity.name}>) items);
+#set($hasDeletedProp = "true")
+#break
+#end
+#end
+#if( $hasDeletedProp == "false")
+				${fn.uncapitalize($repositoryName)}.delete((Iterable<${entity.name}>) items);
+#end
+
+				response.setHasError(false);
+			}
+
+			slf4jLogger.info("----end-----");
+		} catch (PermissionDeniedDataAccessException e) {
+			exceptionUtils.PERMISSION_DENIED_DATA_ACCESS_EXCEPTION(response, locale, e);
+		} catch (DataAccessResourceFailureException e) {
+			exceptionUtils.DATA_ACCESS_RESOURCE_FAILURE_EXCEPTION(response, locale, e);
+		} catch (DataAccessException e) {
+			exceptionUtils.DATA_ACCESS_EXCEPTION(response, locale, e);
+		} catch (RuntimeException e) {
+			exceptionUtils.RUNTIME_EXCEPTION(response, locale, e);
+		} catch (Exception e) {
+			exceptionUtils.EXCEPTION(response, locale, e);
+		} finally {
+			if (response.isHasError() && response.getStatus() != null) {
+				slf4jLogger.info("Erreur| code: {} -  message: {}", response.getStatus().getCode(), response.getStatus().getMessage());
+				throw new RuntimeException(response.getStatus().getCode() + ";" + response.getStatus().getMessage());
+			}
+		}
+		return response;
+	}
+
+	/**
+	 * get ${entity.name} by using ${dto} as object.
+	 * 
+	 * @param request
+	 * @return response
+	 * 
+	 */
+	@SuppressWarnings("unused")
+	@Override
+	public Response getByCriteria(Request request, Locale locale) {
+		slf4jLogger.info("----begin-----");
+		
+		response = new Response();
+		
+		try {
+			List<${entity.name}> items = null;
+			items = ${fn.uncapitalize($repositoryName)}.getByCriteria(request, em);
+			if (items != null && !items.isEmpty()) {
+				List<${dto}> itemsDto = new ArrayList<${dto}>();
+				for (${entity.name} entity : items) {
+					${dto} dto = getFullInfos(entity, locale);
+					if (dto == null) continue;
+					itemsDto.add(dto);
+				}
+				response.setItems${entity.name}(itemsDto);
+				response.setCount(${fn.uncapitalize($repositoryName)}.count(request, em));
+				response.setHasError(false);
+			} else {
+				response.setStatus(functionalError.DATA_EMPTY("${fn.uncapitalize($entity.name)}", locale));
+				response.setHasError(false);
+				return response;
+			}
+
+			slf4jLogger.info("----end-----");
+		} catch (PermissionDeniedDataAccessException e) {
+			exceptionUtils.PERMISSION_DENIED_DATA_ACCESS_EXCEPTION(response, locale, e);
+		} catch (DataAccessResourceFailureException e) {
+			exceptionUtils.DATA_ACCESS_RESOURCE_FAILURE_EXCEPTION(response, locale, e);
+		} catch (DataAccessException e) {
+			exceptionUtils.DATA_ACCESS_EXCEPTION(response, locale, e);
+		} catch (RuntimeException e) {
+			exceptionUtils.RUNTIME_EXCEPTION(response, locale, e);
+		} catch (Exception e) {
+			exceptionUtils.EXCEPTION(response, locale, e);
+		} finally {
+			if (response.isHasError() && response.getStatus() != null) {
+				slf4jLogger.info("Erreur| code: {} -  message: {}", response.getStatus().getCode(), response.getStatus().getMessage());
+				throw new RuntimeException(response.getStatus().getCode() + ";" + response.getStatus().getMessage());
+			}
+		}
+		return response;
+	}
+
+	/**
+	 * get full ${entity.name}Dto by using ${entity.name} as object.
+	 * 
+	 * @param entity, locale
+	 * @return ${entity.name}Dto
+	 * 
+	 */
+	private ${dto} getFullInfos(${entity.name} entity, Locale locale) throws Exception {
+		${dto} dto = ${transformerName}.INSTANCE.toDto(entity);
+		if (dto == null){
+			return null;
+		}
+
+		return dto;
+	}
+}
