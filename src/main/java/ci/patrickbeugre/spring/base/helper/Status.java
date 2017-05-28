@@ -12,14 +12,13 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  *
- * @author fossouulrich
+ * @author patrickbeugre
  */
 @XmlRootElement
 @JsonInclude(Include.NON_NULL)
 public class Status {
 	private String			code;
 	private String			message;
-	//private static Status	status	= new Status();
 
 	public String getCode() {
 		return code;

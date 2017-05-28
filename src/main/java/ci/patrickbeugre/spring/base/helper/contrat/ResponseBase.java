@@ -9,7 +9,7 @@ import ci.patrickbeugre.spring.base.helper.Status;
 
 /**
  *
- * @author
+ * @author patrickbeugre
  */
 public class ResponseBase {
 

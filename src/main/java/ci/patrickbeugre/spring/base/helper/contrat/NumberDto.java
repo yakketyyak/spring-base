@@ -7,7 +7,7 @@ package ci.patrickbeugre.spring.base.helper.contrat;
 
 /**
  *
- * @author fossouulrich
+ * @author patrickbeugre
  */
 public class NumberDto {
 	private Long nombre;

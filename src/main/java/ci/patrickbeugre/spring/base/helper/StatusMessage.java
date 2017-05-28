@@ -7,7 +7,7 @@ package ci.patrickbeugre.spring.base.helper;
 
 /**
  *
- * @author fossouulrich
+ * @author patrickbeugre
  */
 public class StatusMessage {
 

@@ -24,7 +24,7 @@ import ci.patrickbeugre.spring.base.helper.dto.UserDto;
 /**
 TRANSFORMER for table "user"
  * 
- * @author SFL Back-End developper
+ * @author patrickbeugre
  *
  */
 @Mapper

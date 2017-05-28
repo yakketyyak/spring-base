@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * 
- * @author fossouulrich
+ * @author patrickbeugre
  */
 @XmlRootElement
 @Component

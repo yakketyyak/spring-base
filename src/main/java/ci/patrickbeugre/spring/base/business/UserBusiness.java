@@ -50,7 +50,7 @@ import ci.patrickbeugre.spring.base.helper.dto.transformer.UserTransformer;
 /**
 BUSINESS for table "user"
  * 
- * @author SFL Back-End developper
+ * @author patrickbeugre
  *
  */
 @Component

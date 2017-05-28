@@ -16,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 /**
  * DTO for table "user"
  * 
- * @author SFL Back-End developper
+ * @author patrickbeugre
  *
  */
 @JsonInclude(Include.NON_NULL)

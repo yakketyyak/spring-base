@@ -8,7 +8,7 @@ package ci.patrickbeugre.spring.base.helper.contrat;
 
 /**
  *
- * @author
+ * @author patrickbeugre
  */
 public class RequestBase {
 	protected String	sessionUser;

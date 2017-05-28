@@ -36,7 +36,7 @@ import ci.patrickbeugre.spring.base.helper.contrat.Response;
 /**
 Controller for table "user"
  * 
- * @author SFL Back-End developper
+ * @author patrickbeugre
  *
  */
 @CrossOrigin("*")

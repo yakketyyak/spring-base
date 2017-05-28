@@ -14,8 +14,6 @@ public class ExceptionUtils {
 
 	private static Logger	slf4jLogger;
 
-	/*@Autowired
-	private FunctionalError	functionalError;*/
 
 	@Autowired
 	private TechnicalError	technicalError;
