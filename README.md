@@ -37,3 +37,16 @@ Activer less secure apps avec https://myaccount.google.com/lesssecureapps?pli=1
   smtp.mail.password=your_gmail_password 
 
 Modifier le username et le password de ce fichier .
+
+Nous avons inclus l'internalisation des messages d'erreurs (Anglais, Français).
+
+Pour celà vous verrez trois fichiers errorMessage.properties, errorMessage_en.properties et errorMessage_fr.properties.
+
+La langue par défaut est le français (errorMessage.properties)
+Comme nous l'avons fait vous pouvez ajouter d'autres langues .
+Il suffit de créer un fichier errorMessage_(code_langue).properties (https://fr.wikipedia.org/wiki/Liste_des_codes_ISO_639-1) puis vous traduisez les messages dans la langue choisie.
+
+Pour changer de langue avec la collection Postman , Mettez dans le header le mot lang comme valeur le code de langue.
+
+Exemple lang en pour anglais
+Vous trouverez la capture d'une image illustrant mes dires dans src/main/resources.
