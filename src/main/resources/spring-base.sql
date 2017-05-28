@@ -11,7 +11,7 @@
  Target Server Version : 50633
  File Encoding         : utf-8
 
- Date: 05/28/2017 10:25:52 AM
+ Date: 05/28/2017 11:16:55 AM
 */
 
 SET NAMES utf8mb4;
@@ -28,7 +28,7 @@ CREATE TABLE `user` (
   `email` varchar(255) DEFAULT NULL,
   `pwd_is_default_pwd` bit(1) DEFAULT NULL,
   `is_deleted` bit(1) DEFAULT NULL,
-  `create_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
   `locked` bit(1) DEFAULT NULL,
   `expired` datetime DEFAULT NULL,
   `forgot_password_code` varchar(255) DEFAULT NULL,

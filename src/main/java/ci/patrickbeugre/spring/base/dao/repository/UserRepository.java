@@ -47,7 +47,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	@Query("select e from User e where e.userName = :userName and e.isDeleted = :isDeleted")
 	User findByUserName(@Param("userName")String userName, @Param("isDeleted")Boolean isDeleted);
 	
-	@Query("select u from User u where u.userName = :userName and u.forgotPasswordCode= :forgotPasswordCode and e.locked = :locked and u.isDeleted = :isDeleted")
+	@Query("select u from User u where u.userName = :userName and u.forgotPasswordCode= :forgotPasswordCode and u.locked = :locked and u.isDeleted = :isDeleted")
 	User getByForgot(@Param("userName") String userName,@Param("forgotPasswordCode") String forgotPasswordCode,@Param("locked")Boolean locked, @Param("isDeleted") Boolean isDeleted);
 	
 	@Query("select e from User e where e.userName = :userName and e.password = :password and e.locked = :locked and e.isDeleted = :isDeleted")

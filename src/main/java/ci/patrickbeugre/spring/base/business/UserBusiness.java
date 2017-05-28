@@ -174,7 +174,7 @@ public class UserBusiness implements IBasicBusiness<Request, Response> {
 	        	body+= "UserName: " + dto.getUserName();
 	        	body+="\n\nMot de passe : " + password;
 	        	body+="\n\n\n\n--------------------------------------";
-	        	body+="Ce mail est automatique, merci de ne pas y répondre ! ";
+	        	body+="\n\nCe mail est automatique, merci de ne pas y répondre ! ";
 	        	response = springBaseUtils.sendEmail(from, toRecipients, subject,body,null);
 				
 				items.add(entityToSave);
@@ -596,7 +596,7 @@ public class UserBusiness implements IBasicBusiness<Request, Response> {
 	        	body+= "Code de validation utilisable une seule fois avant la date d'expiration : " + validationCode;
 	        	body+="\n\nDate d'expiration : " + dateFormat.format(targetTime);
 	        	body+="\n\n\n\n--------------------------------------";
-	        	body+="Ce mail est automatique, merci de ne pas y répondre ! ";
+	        	body+="\n\nCe mail est automatique, merci de ne pas y répondre ! ";
 	        	response = springBaseUtils.sendEmail(from, toRecipients, subject,body,null);
 	        	if(!response.isHasError()){
 	        		// inserer les données en base de données

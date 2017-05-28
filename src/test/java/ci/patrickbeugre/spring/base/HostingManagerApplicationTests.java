@@ -1,3 +1,4 @@
+package ci.patrickbeugre.spring.base;
 //package ci.smile.hosting;
 //
 //import org.junit.Test;
