@@ -2,6 +2,8 @@
 
 Ce projet est un exemple pour construire des services WEB avec le puissant framework Spring Boot
 
+Vous devez installer jdk8, maven et ajouter maven à votre variable d'environnement en fonction de votre plateforme.
+Installez et configuer maven (https://maven.apache.org/install.html).
 
 Vous devez utiliser STS (Spring Tools Suite) pour l'importer après l'avoir cloné.
 Avant de l'importer dans STS vous devez créer la base de données en local.
@@ -29,7 +31,7 @@ Envoi de mail
 Pour envoyer des mails aux utilisateurs vous devez ajouter des paramètres de connexion gmail 
 au fichier application.properties.
 
-Activer less secure apps avec https://myaccount.google.com/lesssecureapps?pli=1
+Activer less secure apps avec https://myaccount.google.com/lesssecureapps?pli=1 .
   #serveur de mail  
   smtp.mail.host=smtp.gmail.com 
   smtp.mail.port=587 
@@ -48,5 +50,14 @@ Il suffit de créer un fichier errorMessage_(code_langue).properties (https://fr
 
 Pour changer de langue avec la collection Postman , Mettez dans le header le mot lang comme valeur le code de langue.
 
-Exemple lang en pour anglais
+Exemple lang en pour anglais .
 Vous trouverez la capture d'une image illustrant mes dires dans src/main/resources.
+
+Comment lancez le projet ?
+
+Allez à la racine du dossier du projet .
+
+Rassurez vous que les deux commandes fonctionnent correctement.
+  mvn clean install -U (à la fin :  BUILD SUCCESS).
+  mvn spring-boot:run (Tomcat started on port(s): 8080 (http)) .
+  
