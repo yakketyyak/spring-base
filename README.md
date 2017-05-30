@@ -5,7 +5,7 @@ Ce projet est un exemple pour construire des services WEB avec le puissant frame
 Vous devez installer jdk8, maven et ajouter maven à votre variable d'environnement en fonction de votre plateforme.
 Installez et configuer maven (https://maven.apache.org/install.html).
 
-Vous devez utiliser STS (Spring Tools Suite) pour l'importer après l'avoir cloné.
+Vous devez utiliser STS (Spring Tools Suite https://spring.io/tools/sts/all) pour l'importer après l'avoir cloné.
 Avant de l'importer dans STS vous devez créer la base de données en local.<br />
 Pour celà allez dans le dossier sr/main/resources puis exécutez le script du fichier spring-base.sql
 avec un utilitaire comme phpMyAdmin ou Navicat.
