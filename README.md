@@ -26,7 +26,7 @@ Télécharger le  sur le site officiel (https://www.getpostman.com/) puis import
   En fonction de votre zone de travail (local, production ou developpement) vous précisez le profil actif à l'aide
   de la ligne spring.profiles.active=local de application.properties
   
-# Envoi de mail
+# Envoie de mail
 
 Pour envoyer des mails aux utilisateurs vous devez ajouter des paramètres de connexion gmail 
 au fichier application.properties.
