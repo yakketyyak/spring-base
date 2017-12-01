@@ -22,6 +22,8 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import ci.patrickbeugre.spring.base.helper.contrat.Response;
 
@@ -31,8 +33,10 @@ public class SBaseUtils {
 	private Response response;
 	@Autowired
 	private ParamsUtils paramsUtils;
+	@Autowired
+	private TemplateEngine templateEngine;
 	
-	private static final Logger slf4jLogger=LoggerFactory.getLogger(SBaseUtils.class);
+	private static final Logger slf4jLogger = LoggerFactory.getLogger(SBaseUtils.class);
 	
 	
 	public static String encrypt(String str) throws Exception {
@@ -114,6 +118,64 @@ public class SBaseUtils {
 		    }
 		    return response;
 		}
+	 
+	 public Response sendEmailImproved(Map<String, String> from, List<Map<String, String>> toRecipients, String subject,
+				String body, List<String> attachmentsFilesAbsolutePaths, Context context, String templateName) {
+			response = new Response();
+			JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
+
+			String smtpServer = paramsUtils.getSmtpHost();
+			if (smtpServer != null) {
+				Boolean auth = false;
+				javaMailSender.setHost(smtpServer);
+				javaMailSender.setPort(paramsUtils.getSmtpPort());
+				javaMailSender.setUsername(paramsUtils.getSmtpUsername());
+				javaMailSender.setPassword(paramsUtils.getSmtpPassword());
+				auth = true;
+
+				javaMailSender.setJavaMailProperties(getMailProperties(paramsUtils.getSmtpHost(), auth));
+
+				MimeMessage message = javaMailSender.createMimeMessage();
+				try {
+					MimeMessageHelper helper = new MimeMessageHelper(message, Boolean.TRUE);
+
+					// sender
+					helper.setFrom(new InternetAddress(from.get("email"), from.get("user")));
+					// recipients
+					List<InternetAddress> to = new ArrayList<InternetAddress>();
+					for (Map<String, String> recipient : toRecipients)
+						to.add(new InternetAddress(recipient.get("email"), recipient.get("user")));
+					helper.setTo(to.toArray(new InternetAddress[0]));
+
+					// Subject and body
+					helper.setSubject(subject);
+					body = templateEngine.process(templateName, context);
+					helper.setText(body, true);
+
+					// Attachments
+					if (attachmentsFilesAbsolutePaths != null && !attachmentsFilesAbsolutePaths.isEmpty())
+						for (String attachmentPath : attachmentsFilesAbsolutePaths) {
+							File pieceJointe = new File(attachmentPath);
+							FileSystemResource file = new FileSystemResource(attachmentPath);
+							if (pieceJointe.exists() && pieceJointe.isFile()) {
+								helper.addAttachment(file.getFilename(), file);
+							}
+						}
+
+					javaMailSender.send(message);
+					response.setHasError(Boolean.FALSE);
+
+				} catch (MessagingException e) {
+					e.printStackTrace();
+					response.setHasError(Boolean.TRUE);
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+					response.setHasError(Boolean.TRUE);
+				}
+			}
+			return response;
+		}
+
 		    private Properties getMailProperties(String host, Boolean auth) {
 		        Properties properties = new Properties();
 		        properties.setProperty("mail.transport.protocol", "smtp");

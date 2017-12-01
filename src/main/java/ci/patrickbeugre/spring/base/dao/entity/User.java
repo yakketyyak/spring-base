@@ -21,6 +21,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 /**
  * Persistent class for entity stored in table "user"
@@ -30,7 +31,7 @@ import javax.persistence.TemporalType;
  */
 
 @Entity
-@Table(name="user" )
+@Table(name="user",uniqueConstraints = {@UniqueConstraint(columnNames={"user_name", "email"})} )
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -47,7 +48,7 @@ public class User implements Serializable {
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------    
-    @Column(name="user_name", length=255)
+    @Column(name="user_name", length=255,unique=true)
     private String     userName     ;
 
     @Column(name="password", length=255)

@@ -222,7 +222,7 @@ public class UserController {
         return response;
     }
 
-	@RequestMapping(value="/getByCriteria",method=RequestMethod.POST,consumes = {"application/json"},produces={"application/json"})
+	@RequestMapping(value="/getByCriteria",method=RequestMethod.POST,consumes = {"application/json"})
     public Response getByCriteria(@RequestBody Request request) {
     	slf4jLogger.info("start method getByCriteria");
         response = new Response();

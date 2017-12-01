@@ -28,6 +28,7 @@ import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.context.Context;
 
 import ci.patrickbeugre.spring.base.dao.entity.User;
 import ci.patrickbeugre.spring.base.dao.repository.UserRepository;
@@ -58,6 +59,8 @@ public class UserBusiness implements IBasicBusiness<Request, Response> {
 
 
 	private Response response;
+	
+	private Context context;
 	
 	@Autowired
 	private UserRepository userRepository;
@@ -166,16 +169,15 @@ public class UserBusiness implements IBasicBusiness<Request, Response> {
 	        	recipient.put("user", dto.getUserName());
 	        	toRecipients.add(recipient); 
 	        	
-	        	
 	        	//subject
+	        	context = new Context();
+	        	context.setVariable("userName", dto.getUserName());
+	        	context.setVariable("password", password);
+	        	context.setVariable("date", dateFormat.format(new Date()));
 	        	String subject = "Paramètres de connexion !";
-	        	String message ="Merci d'utiliser ces paramètres pour votre première connexion ! \n\n";
-	        	String body="" + message;
-	        	body+= "UserName: " + dto.getUserName();
-	        	body+="\n\nMot de passe : " + password;
-	        	body+="\n\n\n\n--------------------------------------";
-	        	body+="\n\nCe mail est automatique, merci de ne pas y répondre ! ";
-	        	response = springBaseUtils.sendEmail(from, toRecipients, subject,body,null);
+	        	String body="";
+	        	body+= "";
+	        	response = springBaseUtils.sendEmailImproved(from, toRecipients, subject,body,null,context,paramsUtils.getUserCredentials());
 				
 				items.add(entityToSave);
 			}

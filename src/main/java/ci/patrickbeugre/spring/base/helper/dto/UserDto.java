@@ -8,6 +8,8 @@
 
 package ci.patrickbeugre.spring.base.helper.dto;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -19,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * @author patrickbeugre
  *
  */
+@XmlRootElement
 @JsonInclude(Include.NON_NULL)
 public class UserDto {
 

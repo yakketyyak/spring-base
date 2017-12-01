@@ -23,6 +23,10 @@ public class ParamsUtils {
 	@Value("${forgot.password.code.validity}")
 	private Integer forgotPasswordCodeValidity;
 	
+	@Value("${template.user.credentials}")
+	private String userCredentials;
+	
+	
 
 	public String getSmtpHost() {
 		return smtpHost;
@@ -42,6 +46,10 @@ public class ParamsUtils {
 
 	public Integer getForgotPasswordCodeValidity() {
 		return forgotPasswordCodeValidity;
+	}
+
+	public String getUserCredentials() {
+		return userCredentials;
 	}
 
 	
