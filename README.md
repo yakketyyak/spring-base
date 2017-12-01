@@ -5,7 +5,7 @@ Ce projet est un exemple pour construire des services WEB avec le puissant frame
 Vous devez installer jdk8, maven et ajouter maven à votre variable d'environnement en fonction de votre plateforme.
 Installez et configuer maven (https://maven.apache.org/install.html).
 
-Vous devez utiliser STS (Spring Tools Suite) pour l'importer après l'avoir cloné.
+Vous devez utiliser STS (Spring Tools Suite https://spring.io/tools/sts/all) pour l'importer après l'avoir cloné.
 Avant de l'importer dans STS vous devez créer la base de données en local.<br />
 Pour celà allez dans le dossier sr/main/resources puis exécutez le script du fichier spring-base.sql
 avec un utilitaire comme phpMyAdmin ou Navicat.
@@ -20,13 +20,13 @@ avec un utilitaire comme phpMyAdmin ou Navicat.
 Pour tester toutes les fonctionnalités vous devez utiliser un client comme Postman.
 Télécharger le  sur le site officiel (https://www.getpostman.com/) puis importez la collection (fichier .json) présente dans le dossier src/main/resources
 
-Utilisation de la base de données
+# Utilisation de la base de données
 
   Le dossier src/main/resources contient trois fichiers .properties (application-dev, application-prod, application-local).
   En fonction de votre zone de travail (local, production ou developpement) vous précisez le profil actif à l'aide
   de la ligne spring.profiles.active=local de application.properties
   
-Envoi de mail
+# Envoie de mail
 
 Pour envoyer des mails aux utilisateurs vous devez ajouter des paramètres de connexion gmail 
 au fichier application.properties.
@@ -53,7 +53,7 @@ Pour changer de langue avec la collection Postman , mettez dans le header le mot
 Exemple lang en pour anglais .
 Vous trouverez la capture d'une image illustrant mes dires dans src/main/resources.
 
-Comment lancez le projet ?
+# Comment lancez le projet ?
 
 Allez à la racine du dossier du projet .
 
