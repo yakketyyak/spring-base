@@ -119,6 +119,7 @@ public class SBaseUtils {
 		    return response;
 		}
 	 
+	 //NOUVELLE FONCTION D'ENVOI DE MAIL
 	 public Response sendEmailImproved(Map<String, String> from, List<Map<String, String>> toRecipients, String subject,
 				String body, List<String> attachmentsFilesAbsolutePaths, Context context, String templateName) {
 			response = new Response();
