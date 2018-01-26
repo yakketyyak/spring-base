@@ -26,6 +26,12 @@ build:
    #- mvn verify
     - export MAVEN_OPTS="-Dmaven.repo.local=.m2"
     - mvn clean install -Dspring.profiles.active=${ENV}
+  artifacts:
+    paths:
+      - target/*.war
+    expire_in: 2d
+  only:
+    - master
 
 # build-war:
 #   stage: build-war
