@@ -1,5 +1,8 @@
 ---
 
+variables:
+  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+
 stages:
   - test
   - build
@@ -8,19 +11,18 @@ cache:
   key: "$CI_COMMIT_REF_NAME"
   untracked: true
 
+
 test:
   stage: test
   image: maven:3-jdk-8
   tags:
-    - docker 
+    - docker
   script:
     - export MAVEN_OPTS="-Dmaven.repo.local=/cache/maven"
     - mvn verify
- 
-build:
+
+build-war:
   stage: build
-  variables:
-    ENV: dev
   image: maven:3-jdk-8
   tags:
     - docker
@@ -28,7 +30,7 @@ build:
     - export MAVEN_OPTS="-Dmaven.repo.local=/cache/maven"
     - mvn clean install -Dspring.profiles.active=${ENV}
   environment:
-    name: dev
+    name: prod
     url: ${APP_URL_DEV}
   artifacts:
     paths:
@@ -37,4 +39,10 @@ build:
   only:
     - master
 
-
+build-image:
+  stage: build
+  tags:
+    - docker
+  script:
+    - docker build -t $IMAGE_TAG .
+    - docker push $IMAGE_TAG
