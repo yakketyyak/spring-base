@@ -1,0 +1,40 @@
+---
+
+stages:
+  - test
+  - build
+
+cache:
+  key: "$CI_COMMIT_REF_NAME"
+  untracked: true
+
+test:
+  stage: test
+  image: maven:3-jdk-8
+  tags:
+    - docker 
+  script:
+    - export MAVEN_OPTS="-Dmaven.repo.local=/cache/maven"
+    - mvn verify
+ 
+build:
+  stage: build
+  variables:
+    ENV: dev
+  image: maven:3-jdk-8
+  tags:
+    - docker
+  script:
+    - export MAVEN_OPTS="-Dmaven.repo.local=/cache/maven"
+    - mvn clean install -Dspring.profiles.active=${ENV}
+  environment:
+    name: dev
+    url: ${APP_URL_DEV}
+  artifacts:
+    paths:
+      - target/*.war
+    expire_in: 2d
+  only:
+    - master
+
+
