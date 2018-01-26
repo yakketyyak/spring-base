@@ -5,7 +5,6 @@ variables:
   DOCKER_HOST: tcp://ip172-18-0-18-b9lnuhe9a8q000auh8og.direct.labs.play-with-docker.com
 
 stages:
-  - test
   - build-war
   - build-image
   - deploy
@@ -14,30 +13,33 @@ cache:
   key: "$CI_COMMIT_REF_NAME"
   untracked: true
 
-
-test:
-  stage: test
-  image: maven:3-jdk-8
-  tags:
-    - docker
-  script:
-    - export MAVEN_OPTS="-Dmaven.repo.local=/cache/maven"
-    - mvn verify
-
-build-war:
+build:
   stage: build-war
   image: maven:3-jdk-8
+  variables:
+    ENV: prod
   tags:
     - docker
   script:
-    - export MAVEN_OPTS="-Dmaven.repo.local=/cache/maven"
+   #- export MAVEN_OPTS="-Dmaven.repo.local=/cache/maven"
+   #- mvn verify
     - mvn clean install -Dspring.profiles.active=${ENV}
-  artifacts:
-    paths:
-      - target/*.war
-    expire_in: 2d
-  only:
-    - master
+
+# build-war:
+#   stage: build-war
+#   image: maven:3-jdk-8
+#   variables:
+#     ENV: prod
+#   tags:
+#     - docker
+#   script:
+#     #- export MAVEN_OPTS="-Dmaven.repo.local=/cache/maven"
+#   artifacts:
+#     paths:
+#       - target/*.war
+#     expire_in: 2d
+#   only:
+#     - master
 
 build-image:
   image: docker
@@ -48,18 +50,18 @@ build-image:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker build -t $IMAGE_TAG .
     - docker push $IMAGE_TAG
-  only:
-    - master
-
-
-deploy-image:
-  image: docker
-  stage: deploy
-  tags:
-    - docker
-  script:
     - export DOCKER_HOST=$DOCKER_HOST
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker run -p 8080:8080 $IMAGE_TAG
   only:
     - master
+
+
+# deploy-image:
+#   image: docker
+#   stage: deploy
+#   tags:
+#     - docker
+#   script:
+#   only:
+#     - master
