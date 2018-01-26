@@ -3,7 +3,7 @@
 version: "3"
 services:
   mail:
-    image: postfix
+    image: tozd/postfix
     environment:
       MY_NETWORKS: "172.0.0.0/8 127.0.0.0/8"
   db:
