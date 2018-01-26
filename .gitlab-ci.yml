@@ -17,11 +17,11 @@ build:
     ENV: prod
   tags:
     - docker
-cache:
-  key: "$CI_COMMIT_REF_NAME"
-  untracked: true
-  paths:
-    - .m2
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    untracked: true
+    paths:
+      - .m2
   script:
    #- mvn verify
     - export MAVEN_OPTS="-Dmaven.repo.local=.m2"
