@@ -2,7 +2,7 @@
 
 variables:
   IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
-  DOCKER_HOST: tcp://ip172-18-0-18-b9lnuhe9a8q000auh8og.direct.labs.play-with-docker.com
+  DOCKER_HOST: tcp://ip172-18-0-18-b9lnuhe9a8q000auh8og.direct.labs.play-with-docker.com:2375
 
 stages:
   - build-war
