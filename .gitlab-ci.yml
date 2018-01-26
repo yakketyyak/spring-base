@@ -10,13 +10,6 @@ stages:
   - deploy
 
 
-
-cache:
-  key: "$CI_COMMIT_REF_NAME"
-  untracked: true
-  paths:
-    - .m2
-
 build:
   stage: build-war
   image: maven:3-jdk-8
@@ -24,9 +17,14 @@ build:
     ENV: prod
   tags:
     - docker
+cache:
+  key: "$CI_COMMIT_REF_NAME"
+  untracked: true
+  paths:
+    - .m2
   script:
-   #- export MAVEN_OPTS="-Dmaven.repo.local=/cache/maven"
    #- mvn verify
+   - export MAVEN_OPTS="-Dmaven.repo.local=.m2"
     - mvn clean install -Dspring.profiles.active=${ENV}
 
 # build-war:

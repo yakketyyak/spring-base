@@ -6,7 +6,7 @@ services:
     image: mariadb
     ports:
       - "8080:8080"
-    envrionment:
+    environment:
       MYSQL_RANDOM_ROOT_PASSWORD: true
       MYSQL_USER: gagie
       MYSQL_DATABASE: gagie
