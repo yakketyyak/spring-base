@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -222,7 +223,7 @@ public class UserController {
         return response;
     }
 
-	@RequestMapping(value="/getByCriteria",method=RequestMethod.POST,consumes = {"application/json"})
+	@RequestMapping(value="/getByCriteria",method=RequestMethod.POST,consumes = {"application/json"},produces={MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_JSON_VALUE})
     public Response getByCriteria(@RequestBody Request request) {
     	slf4jLogger.info("start method getByCriteria");
         response = new Response();

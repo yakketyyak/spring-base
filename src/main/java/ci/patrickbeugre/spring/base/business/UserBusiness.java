@@ -123,7 +123,7 @@ public class UserBusiness implements IBasicBusiness<Request, Response> {
 
 				//vérification de l'adresse email
 				if (!SBaseUtils.isValidEmail(dto.getEmail())) {
-					response.setStatus(functionalError.DATA_EXIST("email -> " + dto.getId(), locale));
+					response.setStatus(functionalError.INVALID_EMAIL("" + dto.getEmail(), locale));
 					response.setHasError(true);
 					return response;
 				}
@@ -278,7 +278,7 @@ public class UserBusiness implements IBasicBusiness<Request, Response> {
 				}
 				if (dto.getEmail() != null && !dto.getEmail().isEmpty()) {
 					if (!SBaseUtils.isValidEmail(dto.getEmail())) {
-						response.setStatus(functionalError.DATA_EXIST("email -> " + dto.getId(), locale));
+						response.setStatus(functionalError.INVALID_EMAIL("" + dto.getEmail(), locale));
 						response.setHasError(true);
 						return response;
 					}

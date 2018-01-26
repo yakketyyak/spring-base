@@ -95,6 +95,12 @@ public class FunctionalError {
 		status.setMessage(messageSource.getMessage("StatusMessage.FUNC_DATA_EXIST", new Object[] {}, locale) + ": " + message);
 		return status;
 	}
+	
+	public Status INVALID_EMAIL(String message, Locale locale) {
+		status.setCode(StatusCode.FUNC_INVALID_EMAIL);
+		status.setMessage(messageSource.getMessage("StatusMessage.FUNC_INVALID_EMAIL", new Object[] {}, locale) + ": " + message);
+		return status;
+	}
 
 	public Status INVALID_CODE_LANGUAGE(String message, Locale locale) {
 		status.setCode(StatusCode.FUNC_INVALID_CODE_LANGUAGE);
