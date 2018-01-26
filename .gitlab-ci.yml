@@ -10,8 +10,6 @@ test:
   image: maven:3-jdk-8
   tags:
     - docker 
-    - shared
-    - java
   script:
     - export MAVEN_OPTS="-Dmaven.repo.local=/cache/maven"
     - mvn verify
@@ -23,8 +21,6 @@ build:
   image: maven:3-jdk-8
   tags:
     - docker
-    - shared
-    - java
   script:
     - export MAVEN_OPTS="-Dmaven.repo.local=/cache/maven"
     - mvn clean install -Dspring.profiles.active=${ENV}
