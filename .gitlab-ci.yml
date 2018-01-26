@@ -4,6 +4,9 @@ stages:
   - test
   - build
 
+cache:
+  key: "$CI_COMMIT_REF_NAME"
+  untracked: true
 
 test:
   stage: test
@@ -24,7 +27,6 @@ build:
   script:
     - export MAVEN_OPTS="-Dmaven.repo.local=/cache/maven"
     - mvn clean install -Dspring.profiles.active=${ENV}
-    - mv target/*.war target/${WAR_NAME}
   environment:
     name: dev
     url: ${APP_URL_DEV}
@@ -34,3 +36,5 @@ build:
     expire_in: 2d
   only:
     - master
+
+
