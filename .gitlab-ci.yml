@@ -5,13 +5,12 @@ variables:
   DOCKER_HOST: tcp://ip172-18-0-18-b9lnuhe9a8q000auh8og.direct.labs.play-with-docker.com:2375
 
 stages:
-  - build-war
-  - build-image
+  - build
   - deploy
 
 
 build:
-  stage: build-war
+  stage: build
   image: maven:3-jdk-8
   variables:
     ENV: prod
@@ -25,6 +24,7 @@ build:
   script:
    #- mvn verify
     - export MAVEN_OPTS="-Dmaven.repo.local=.m2"
+    - echo $ENV
     - mvn clean install -Dspring.profiles.active=${ENV}
   artifacts:
     paths:
@@ -51,7 +51,7 @@ build:
 
 build-image:
   image: tmaier/docker-compose
-  stage: build-image
+  stage: deploy
   tags:
     - docker
   script:
