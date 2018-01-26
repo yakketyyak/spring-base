@@ -7,7 +7,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      MYSQL_RANDOM_ROOT_PASSWORD: true
+      MYSQL_RANDOM_ROOT_PASSWORD: "true"
       MYSQL_USER: gagie
       MYSQL_DATABASE: gagie
       MYSQL_PASSWORD: AGc9Z4S88BQDGk8
