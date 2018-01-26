@@ -1,0 +1,19 @@
+---
+
+version: "3"
+services:
+  db:
+    image: mariadb
+    ports:
+      - "8080:8080"
+    envrionment:
+      MYSQL_RANDOM_ROOT_PASSWORD: true
+      MYSQL_USER: gagie
+      MYSQL_DATABASE: gagie
+      MYSQL_PASSWORD: AGc9Z4S88BQDGk8
+  app:
+    image: ${IMAGE_TAG}
+    ports:
+      - "8080:8080"
+    links:
+      - "db:db"

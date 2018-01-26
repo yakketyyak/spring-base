@@ -9,9 +9,13 @@ stages:
   - build-image
   - deploy
 
+
+
 cache:
   key: "$CI_COMMIT_REF_NAME"
   untracked: true
+  paths:
+    - .m2
 
 build:
   stage: build-war
@@ -42,7 +46,7 @@ build:
 #     - master
 
 build-image:
-  image: docker
+  image: tmaier/docker-compose
   stage: build-image
   tags:
     - docker
@@ -51,8 +55,8 @@ build-image:
     - docker build -t $IMAGE_TAG .
     - docker push $IMAGE_TAG
     - export DOCKER_HOST=$DOCKER_HOST
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker run -p 8080:8080 $IMAGE_TAG
+    - docker-compose up -d
+    # - docker run -p 8080:8080 $IMAGE_TAG
   only:
     - master
 
