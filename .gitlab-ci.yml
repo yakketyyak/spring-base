@@ -12,8 +12,6 @@ stages:
 build:
   stage: build
   image: maven:3-jdk-8
-  variables:
-    ENV: prod
   tags:
     - docker
   cache:
@@ -60,6 +58,7 @@ deploy:
     - docker build -t $IMAGE_TAG .
     - docker push $IMAGE_TAG
     - export DOCKER_HOST=$DOCKER_HOST
+    - docker-compose pull
     - docker-compose up -d
     # - docker run -p 8080:8080 $IMAGE_TAG
   only:
