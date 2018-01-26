@@ -42,4 +42,5 @@ public class StatusCode {
 	public static final String	FUNC_DISALLOWED_OPERATION		= "920";
 	public static final String	FUNC_DATA_NOT_DELETABLE			= "921";
 	public static final String	FUNC_DATA_TOO_LONG				= "922";
+	public static final String  FUNC_INVALID_EMAIL              = "923";
 }
