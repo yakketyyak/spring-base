@@ -25,7 +25,8 @@ build:
    #- mvn verify
     - export MAVEN_OPTS="-Dmaven.repo.local=.m2"
     - echo $ENV
-    - mvn clean install -Dspring.profiles.active=${ENV}
+    # - mvn clean install -Dspring.profiles.active=${ENV}
+    - mvn clean install -Dspring.profiles.active=prod
   artifacts:
     paths:
       - target/*.war
@@ -49,7 +50,7 @@ build:
 #   only:
 #     - master
 
-build-image:
+deploy:
   image: tmaier/docker-compose
   stage: deploy
   tags:
