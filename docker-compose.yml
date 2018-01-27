@@ -16,7 +16,7 @@ services:
       MYSQL_DATABASE: gagie
       MYSQL_PASSWORD: AGc9Z4S88BQDGk8
   app:
-    image: ${IMAGE_TAG:-registry.gitlab.com/gagie/spring-base:master}
+    image: ${IMAGE_TAG}
     ports:
       - "8080:8080"
     links:
