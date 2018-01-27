@@ -1,0 +1,24 @@
+---
+
+version: "3"
+services:
+  mail:
+    image: tozd/postfix
+    environment:
+      MY_NETWORKS: "172.0.0.0/8 127.0.0.0/8"
+  db:
+    image: mariadb
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: "true"
+      MYSQL_USER: gagie
+      MYSQL_DATABASE: gagie
+      MYSQL_PASSWORD: AGc9Z4S88BQDGk8
+  app:
+    image: ${IMAGE_TAG:-registry.gitlab.com/gagie/spring-base:master}
+    ports:
+      - "8080:8080"
+    links:
+      - "db:db"
+      - "mail:mail"

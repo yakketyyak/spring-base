@@ -1,49 +1,35 @@
 ---
 
 variables:
-  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
-  DOCKER_HOST: tcp://ip172-18-0-18-b9lnuhe9a8q000auh8og.direct.labs.play-with-docker.com
+  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  DOCKER_HOST: tcp://ip172-18-0-6-b9lr3nir91k000cgf6h0.direct.labs.play-with-docker.com:2375
 
 stages:
-  - build-war
-  - build-image
+  - build
   - deploy
 
-cache:
-  key: "$CI_COMMIT_REF_NAME"
-  untracked: true
-
 build:
-  stage: build-war
+  stage: build
   image: maven:3-jdk-8
-  variables:
-    ENV: prod
   tags:
     - docker
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    untracked: true
+    paths:
+      - .m2
   script:
-   #- export MAVEN_OPTS="-Dmaven.repo.local=/cache/maven"
    #- mvn verify
-    - mvn clean install -Dspring.profiles.active=${ENV}
+    - export MAVEN_OPTS="-Dmaven.repo.local=.m2"
+    - mvn clean install -Dspring.profiles.active=prod
+  artifacts:
+    paths:
+      - target/*.war
+    expire_in: 2d
 
-# build-war:
-#   stage: build-war
-#   image: maven:3-jdk-8
-#   variables:
-#     ENV: prod
-#   tags:
-#     - docker
-#   script:
-#     #- export MAVEN_OPTS="-Dmaven.repo.local=/cache/maven"
-#   artifacts:
-#     paths:
-#       - target/*.war
-#     expire_in: 2d
-#   only:
-#     - master
-
-build-image:
-  image: docker
-  stage: build-image
+deploy-to-docker:
+  image: tmaier/docker-compose
+  stage: deploy
   tags:
     - docker
   script:
@@ -51,17 +37,17 @@ build-image:
     - docker build -t $IMAGE_TAG .
     - docker push $IMAGE_TAG
     - export DOCKER_HOST=$DOCKER_HOST
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker run -p 8080:8080 $IMAGE_TAG
+    - docker-compose pull
+    - docker-compose up -d
+    # - docker run -p 8080:8080 $IMAGE_TAG
   only:
     - master
 
-
-# deploy-image:
-#   image: docker
-#   stage: deploy
-#   tags:
-#     - docker
-#   script:
-#   only:
-#     - master
+deploy-to-server:
+  stage: deploy
+  tags:
+    - docker
+  image: ansible/centos7-ansible
+  script:
+    - cd ansible
+    - ansible-playbook deploy.yml -l $CI_COMMIT_REF_NAME -e  archive_file=./target/*war
