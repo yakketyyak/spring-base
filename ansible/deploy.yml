@@ -1,10 +1,9 @@
-
 - hosts: all
   vars:
     TOMCAT_VERSION: 8.5.3
     TOMCAT_MAJOR: 8
     ROOT_DIR: "/var/lib"
-    TOMCAT_HOME: "{{ ROOT_DIR }}/tomcat }}"
+    TOMCAT_HOME: "{{ ROOT_DIR }}/tomcat"
     CATALINA_HOME: "{{ TOMCAT_HOME }}"
   tasks:
     - name: install openjdk
@@ -18,6 +17,11 @@
         name: tar
         state: present
 
+    - name: create tomcat dir
+      file:
+        path: "{{ ROOT_DIR }}"
+        state: directory
+        
     - name: get tomcat
       unarchive:
         src: "http://archive.apache.org/dist/tomcat/tomcat-{{TOMCAT_MAJOR}}/v{{TOMCAT_VERSION}}/bin/apache-tomcat-{{TOMCAT_VERSION}}.tar.gz"
@@ -31,9 +35,11 @@
         state: link
 
     - name: start catalina
-      command: "{{ TOMCAT_HOME }}/bin/catalina.sh start"
+      environment:
+        PATH: "{{ nodejs_prefix }}/bin:/usr/bin:/bin:/sbin"
+      shell: "{{ TOMCAT_HOME }}/bin/catalina.sh start"
 
     - name: copy war
       copy:
-        src: "../target/*war"
+        src: "../target/spring-base-1.0.war"
         dest: "{{ TOMCAT_HOME }}/webapps"
