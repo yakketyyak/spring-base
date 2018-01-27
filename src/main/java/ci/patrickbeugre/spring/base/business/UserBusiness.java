@@ -762,6 +762,7 @@ public class UserBusiness implements IBasicBusiness<Request, Response> {
 		response = new Response();
 		
 		try {
+			response.setSessionUser("TEST GAGIE");
 			response.setHasError(Boolean.FALSE);
 			response.setStatus(functionalError.SUCCESS("", locale));
 			slf4jLogger.info("----end-----");
