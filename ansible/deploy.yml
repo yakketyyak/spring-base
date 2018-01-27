@@ -39,5 +39,5 @@
 
     - name: copy war
       copy:
-        src: "../target/*war"
+        src: "../target/spring-base-1.0.war"
         dest: "{{ TOMCAT_HOME }}/webapps"
