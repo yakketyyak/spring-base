@@ -42,14 +42,14 @@ deploy-to-docker:
   only:
     - master
 
-deploy-to-server:
-  stage: deploy
-  tags:
-    - pwd
-  image: ansible/centos7-ansible
-  script:
-    - ls
-    - ls target
-    - cd ansible
-    - chmod 0600 ssh.key
-    - ansible-playbook deploy.yml -l $CI_COMMIT_REF_NAME 
+# deploy-to-server:
+#   stage: deploy
+#   tags:
+#     - pwd
+#   image: ansible/centos7-ansible
+#   script:
+#     - ls
+#     - ls target
+#     - cd ansible
+#     - chmod 0600 ssh.key
+#     - ansible-playbook deploy.yml -l $CI_COMMIT_REF_NAME 
