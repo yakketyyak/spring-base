@@ -1,5 +1,5 @@
 [master]
-direct.labs.play-with-docker.com ansible_user=ip172-18-0-7-b9m8t569a8q000c9c2t0
+direct.labs.play-with-docker.com ansible_user=ip172-18-0-11-b9m8t569a8q000c9c2t0
 
 [dev]
 
