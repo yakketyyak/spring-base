@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -18,6 +19,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -35,6 +37,8 @@ public class SBaseUtils {
 	private ParamsUtils paramsUtils;
 	@Autowired
 	private TemplateEngine templateEngine;
+	@Autowired
+	private Environment environment;
 	
 	private static final Logger slf4jLogger = LoggerFactory.getLogger(SBaseUtils.class);
 	
@@ -177,17 +181,39 @@ public class SBaseUtils {
 			return response;
 		}
 
-		    private Properties getMailProperties(String host, Boolean auth) {
-		        Properties properties = new Properties();
-		        properties.setProperty("mail.transport.protocol", "smtp");
-		        properties.setProperty("mail.smtp.auth", auth.toString());
-		        properties.setProperty("mail.smtp.starttls.enable", "true");  
-		        properties.setProperty("mail.smtp.starttls.required", "true");
-		        properties.setProperty("mail.debug", "true");
-		        if(host.equals("smtp.gmail.com"))
-		        	properties.setProperty("mail.smtp.ssl.trust", "smtp.gmail.com");
-		        return properties;
-		    }
+	 private Properties getMailProperties(String host, Boolean auth) {
+			Properties properties = new Properties();
+			if (environment.getActiveProfiles() != null && environment.getActiveProfiles().length > 0) {
+				String activeProfiles = "";
+				for (int i = 0; i < environment.getActiveProfiles().length; i++) {
+					activeProfiles += environment.getActiveProfiles()[i];
+				}
+				slf4jLogger.info("active profile: " + activeProfiles);
+				// Check if Active profiles contains profile to ignore
+				if (Arrays.stream(environment.getActiveProfiles())
+						.anyMatch(env -> env.equals("dev") || env.equals("local"))) {
+					//DEV
+					properties.setProperty("mail.transport.protocol", "smtp");
+					properties.setProperty("mail.smtp.auth", auth.toString());
+					properties.setProperty("mail.smtp.starttls.enable", "true");
+					properties.setProperty("mail.smtp.starttls.required", "true");
+					properties.setProperty("mail.debug", "true");
+					if (host.equals("smtp.gmail.com")) {
+						properties.setProperty("mail.smtp.ssl.trust", "smtp.gmail.com");
+					}
+				}
+				else {
+					//PROD or nothing
+					 properties.setProperty("mail.smtp.auth", auth.toString());
+					 properties.setProperty("mail.transport.protocol", "smtp");
+					 properties.put("mail.smtp.starttls.enable", "false");
+					 properties.setProperty("mail.debug", "true");
+				}
+			}
+			
+
+			return properties;
+		}
 		    
 		    public static boolean isValidEmail(String email){
 		    	String regex = "^(.+)@(.+)$";
