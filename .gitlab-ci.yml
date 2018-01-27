@@ -35,7 +35,7 @@ deploy-to-docker:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker build -t $IMAGE_TAG .
     - docker push $IMAGE_TAG
-    - export DOCKER_HOST=$DOCKER_HOST
+    - export DOCKER_HOST=tcp://$DOCKER_HOST:2375
     - docker-compose pull
     - docker-compose up -d
     # - docker run -p 8080:8080 $IMAGE_TAG
