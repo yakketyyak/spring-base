@@ -32,3 +32,8 @@
 
     - name: start catalina
       command: "{{ TOMCAT_HOME }}/bin/catalina.sh start"
+
+    - name: copy war
+      copy:
+        src: "{{ archive_file }}"
+        dest: "{{ TOMCAT_HOME }}/webapps"
