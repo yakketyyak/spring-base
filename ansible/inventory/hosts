@@ -1,0 +1,6 @@
+[master]
+direct.labs.play-with-docker.com ansible_user=ip172-18-0-5-b9m52oir91k000dmfdng
+
+[dev]
+
+[staging]

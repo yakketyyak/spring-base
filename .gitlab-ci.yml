@@ -42,3 +42,12 @@ deploy-to-docker:
     # - docker run -p 8080:8080 $IMAGE_TAG
   only:
     - master
+
+deploy-to-server:
+  stage: deploy
+  tags:
+    - docker
+  image: ansible/centos7-ansible
+  script:
+    - cd ansible
+    - ansible-playbook deploy.yml -l $CI_COMMIT_REF_NAME -e  archive_file=./target/*war
