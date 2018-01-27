@@ -174,7 +174,7 @@ public class UserBusiness implements IBasicBusiness<Request, Response> {
 	        	String subject = "Paramètres de connexion !";
 	        	String body="";
 	        	body+= "";
-	        	response = springBaseUtils.sendEmailImproved(from, toRecipients, subject,body,null,context,paramsUtils.getUserCredentials());
+	        	//response = springBaseUtils.sendEmailImproved(from, toRecipients, subject,body,null,context,paramsUtils.getUserCredentials());
 				
 				items.add(entityToSave);
 			}
