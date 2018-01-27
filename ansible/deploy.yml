@@ -4,7 +4,7 @@
     TOMCAT_VERSION: 8.5.3
     TOMCAT_MAJOR: 8
     ROOT_DIR: "/var/lib"
-    TOMCAT_HOME: "{{ ROOT_DIR }}/tomcat }}"
+    TOMCAT_HOME: "{{ ROOT_DIR }}/tomcat"
     CATALINA_HOME: "{{ TOMCAT_HOME }}"
   tasks:
     - name: install openjdk
