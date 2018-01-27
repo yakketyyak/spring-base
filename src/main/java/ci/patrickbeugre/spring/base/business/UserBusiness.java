@@ -8,6 +8,8 @@
 
 package ci.patrickbeugre.spring.base.business;
 
+import static org.mockito.Matchers.booleanThat;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -725,6 +727,42 @@ public class UserBusiness implements IBasicBusiness<Request, Response> {
 				response.setHasError(false);
 				return response;
 			}
+			response.setStatus(functionalError.SUCCESS("", locale));
+			slf4jLogger.info("----end-----");
+		} catch (PermissionDeniedDataAccessException e) {
+			exceptionUtils.PERMISSION_DENIED_DATA_ACCESS_EXCEPTION(response, locale, e);
+		} catch (DataAccessResourceFailureException e) {
+			exceptionUtils.DATA_ACCESS_RESOURCE_FAILURE_EXCEPTION(response, locale, e);
+		} catch (DataAccessException e) {
+			exceptionUtils.DATA_ACCESS_EXCEPTION(response, locale, e);
+		} catch (RuntimeException e) {
+			exceptionUtils.RUNTIME_EXCEPTION(response, locale, e);
+		} catch (Exception e) {
+			exceptionUtils.EXCEPTION(response, locale, e);
+		} finally {
+			if (response.isHasError() && response.getStatus() != null) {
+				slf4jLogger.info("Erreur| code: {} -  message: {}", response.getStatus().getCode(), response.getStatus().getMessage());
+				throw new RuntimeException(response.getStatus().getCode() + ";" + response.getStatus().getMessage());
+			}
+		}
+		return response;
+	}
+	
+	/**
+	 * get User by using UserDto as object.
+	 * 
+	 * @param request
+	 * @return response
+	 * 
+	 */
+	@SuppressWarnings("unused")
+	public Response ok(Request request, Locale locale) {
+		slf4jLogger.info("----begin-----");
+		
+		response = new Response();
+		
+		try {
+			response.setHasError(Boolean.FALSE);
 			response.setStatus(functionalError.SUCCESS("", locale));
 			slf4jLogger.info("----end-----");
 		} catch (PermissionDeniedDataAccessException e) {

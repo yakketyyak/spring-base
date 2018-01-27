@@ -396,4 +396,40 @@ public class UserController {
     	}
         return response;
     }
+    
+    @RequestMapping(value="/ok",method=RequestMethod.POST,consumes = {"application/json"},produces={"application/json"})
+    public Response ok(@RequestBody Request request) {
+    	slf4jLogger.info("start method ok");
+        response = new Response();
+        String languageID = (String) requestBasic.getAttribute("CURRENT_LANGUAGE_IDENTIFIER");
+    	Locale locale = new Locale(languageID, "");
+        try {
+        	response=validateObject(request,locale);
+        	if(!response.isHasError()){
+               response = userBusiness.ok(request,locale);
+        	}else{
+        	   slf4jLogger.info("Erreur| code: {} -  message: {}",response.getStatus().getCode(),response.getStatus().getMessage());
+        	   return response;
+        	}
+        	
+        	if(!response.isHasError()){
+        	  slf4jLogger.info("end method ok");
+          	  slf4jLogger.info("code: {} -  message: {}",StatusCode.SUCCESS,StatusMessage.SUCCESS);  
+            }else{
+              slf4jLogger.info("Erreur| code: {} -  message: {}",response.getStatus().getCode(),response.getStatus().getMessage());
+            }
+ 
+        } catch (CannotCreateTransactionException e) {
+    		exceptionUtils.CANNOT_CREATE_TRANSACTION_EXCEPTION(response, locale, e);
+    	} catch (TransactionSystemException e) {
+    		exceptionUtils.TRANSACTION_SYSTEM_EXCEPTION(response, locale, e);
+    	} catch (RuntimeException e) {
+    		exceptionUtils.RUNTIME_EXCEPTION(response, locale, e);
+    	} catch (Exception e) {
+    		exceptionUtils.EXCEPTION(response, locale, e);
+    	}
+        return response;
+    }
+    
+    
 }
