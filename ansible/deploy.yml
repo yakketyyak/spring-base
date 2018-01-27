@@ -1,4 +1,3 @@
-
 - hosts: all
   vars:
     TOMCAT_VERSION: 8.5.3
@@ -18,6 +17,11 @@
         name: tar
         state: present
 
+    - name: create tomcat dir
+      file:
+        path: "{{ ROOT_DIR }}"
+        state: directory
+        
     - name: get tomcat
       unarchive:
         src: "http://archive.apache.org/dist/tomcat/tomcat-{{TOMCAT_MAJOR}}/v{{TOMCAT_VERSION}}/bin/apache-tomcat-{{TOMCAT_VERSION}}.tar.gz"
