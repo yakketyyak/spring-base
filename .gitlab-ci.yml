@@ -4,27 +4,26 @@ variables:
   IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
 
 stages:
-  - build
   - deploy
 
-build:
-  stage: build
-  image: maven:3-jdk-8
-  tags:
-    - docker
-  cache:
-    key: "$CI_COMMIT_REF_NAME"
-    untracked: true
-    paths:
-      - .m2
-  script:
-   #- mvn verify
-    - export MAVEN_OPTS="-Dmaven.repo.local=.m2"
-    - mvn clean install -Dspring.profiles.active=prod
-  artifacts:
-    paths:
-      - target/*.war
-    expire_in: 2d
+# build:
+#   stage: build
+#   image: maven:3-jdk-8
+#   tags:
+#     - docker
+#   cache:
+#     key: "$CI_COMMIT_REF_NAME"
+#     untracked: true
+#     paths:
+#       - .m2
+#   script:
+#    #- mvn verify
+#     - export MAVEN_OPTS="-Dmaven.repo.local=.m2"
+#     - mvn clean install -Dspring.profiles.active=prod
+#   artifacts:
+#     paths:
+#       - target/*.war
+#     expire_in: 2d
 
 deploy-to-docker:
   image: tmaier/docker-compose
