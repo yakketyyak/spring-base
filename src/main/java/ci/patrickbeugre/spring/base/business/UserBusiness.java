@@ -8,8 +8,6 @@
 
 package ci.patrickbeugre.spring.base.business;
 
-import static org.mockito.Matchers.booleanThat;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,9 +36,6 @@ import ci.patrickbeugre.spring.base.helper.ExceptionUtils;
 import ci.patrickbeugre.spring.base.helper.FunctionalError;
 import ci.patrickbeugre.spring.base.helper.ParamsUtils;
 import ci.patrickbeugre.spring.base.helper.SBaseUtils;
-import ci.patrickbeugre.spring.base.helper.Status;
-import ci.patrickbeugre.spring.base.helper.StatusCode;
-import ci.patrickbeugre.spring.base.helper.StatusMessage;
 import ci.patrickbeugre.spring.base.helper.TechnicalError;
 import ci.patrickbeugre.spring.base.helper.Utilities;
 import ci.patrickbeugre.spring.base.helper.Validate;
