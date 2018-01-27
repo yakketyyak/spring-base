@@ -35,7 +35,9 @@
         state: link
 
     - name: start catalina
-      command: "{{ TOMCAT_HOME }}/bin/catalina.sh start"
+      environment:
+        PATH: "{{ nodejs_prefix }}/bin:/usr/bin:/bin:/sbin"
+      shell: "{{ TOMCAT_HOME }}/bin/catalina.sh start"
 
     - name: copy war
       copy:
