@@ -1,13 +1,12 @@
 ---
 
 variables:
-  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
-  DOCKER_HOST: tcp://ip172-18-0-18-b9lnuhe9a8q000auh8og.direct.labs.play-with-docker.com:2375
+  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  DOCKER_HOST: tcp://ip172-18-0-6-b9lr3nir91k000cgf6h0.direct.labs.play-with-docker.com:2375
 
 stages:
   - build
   - deploy
-
 
 build:
   stage: build
@@ -22,33 +21,13 @@ build:
   script:
    #- mvn verify
     - export MAVEN_OPTS="-Dmaven.repo.local=.m2"
-    - echo $ENV
-    # - mvn clean install -Dspring.profiles.active=${ENV}
     - mvn clean install -Dspring.profiles.active=prod
   artifacts:
     paths:
       - target/*.war
     expire_in: 2d
-  only:
-    - master
 
-# build-war:
-#   stage: build-war
-#   image: maven:3-jdk-8
-#   variables:
-#     ENV: prod
-#   tags:
-#     - docker
-#   script:
-#     #- export MAVEN_OPTS="-Dmaven.repo.local=/cache/maven"
-#   artifacts:
-#     paths:
-#       - target/*.war
-#     expire_in: 2d
-#   only:
-#     - master
-
-deploy:
+deploy-to-docker:
   image: tmaier/docker-compose
   stage: deploy
   tags:
@@ -63,13 +42,3 @@ deploy:
     # - docker run -p 8080:8080 $IMAGE_TAG
   only:
     - master
-
-
-# deploy-image:
-#   image: docker
-#   stage: deploy
-#   tags:
-#     - docker
-#   script:
-#   only:
-#     - master
