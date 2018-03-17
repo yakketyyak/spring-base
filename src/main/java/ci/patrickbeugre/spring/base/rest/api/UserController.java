@@ -438,7 +438,7 @@ public class UserController {
 	  @ResponseBody
 	  public Response checkStatusTomcat() {
     	Response response = new Response();
-	  String ok = "OK GAGIE FOR TRAINING";
+	  String ok = "KO";
 	  
 	  try {
 	    
