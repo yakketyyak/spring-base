@@ -438,11 +438,11 @@ public class UserController {
 	  @ResponseBody
 	  public Response checkStatusTomcat() {
     	Response response = new Response();
-	  String reponse = "KO";
+	  String ok = "OK GAGIE FOR TRAINING";
 	  
 	  try {
 	    
-		  response.setSessionUser("OK");
+		  response.setSessionUser(ok);
 	    
 	  } catch (Exception e) {
 	    // slf4jLogger.warn(e.getMessage());
