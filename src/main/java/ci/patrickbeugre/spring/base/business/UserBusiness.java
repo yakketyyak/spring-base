@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -125,25 +126,25 @@ public class UserBusiness implements IBasicBusiness<Request, Response> {
 					return response;
 				}
 				
-				//l'email doit être unique en base . 
-				User userEmail = null;
-				userEmail = userRepository.findByEmail(dto.getEmail(), Boolean.FALSE);
-				if (userEmail != null) {
-					response.setStatus(functionalError.DATA_EXIST("user -> " + dto.getEmail(), locale));
-					response.setHasError(true);
-					return response;
-				}
+//				//l'email doit être unique en base . 
+//				User userEmail = null;
+//				userEmail = userRepository.findByEmail(dto.getEmail(), Boolean.FALSE);
+//				if (userEmail != null) {
+//					response.setStatus(functionalError.DATA_EXIST("user -> " + dto.getEmail(), locale));
+//					response.setHasError(true);
+//					return response;
+//				}
 				
 				// Verify if user to insert do not exist
 				//UserName doit être unique en base . 
-				User existingEntity = null;
-				//TODO: add/replace by the best method
-				existingEntity = userRepository.findByUserName( dto.getUserName(), Boolean.FALSE);
-				if (existingEntity != null) {
-					response.setStatus(functionalError.DATA_EXIST("user -> " + dto.getUserName(), locale));
-					response.setHasError(true);
-					return response;
-				}
+//				User existingEntity = null;
+//				//TODO: add/replace by the best method
+//				existingEntity = userRepository.findByUserName( dto.getUserName(), Boolean.FALSE);
+//				if (existingEntity != null) {
+//					response.setStatus(functionalError.DATA_EXIST("user -> " + dto.getUserName(), locale));
+//					response.setHasError(true);
+//					return response;
+//				}
 
 				
 				User entityToSave = null;
@@ -202,15 +203,25 @@ public class UserBusiness implements IBasicBusiness<Request, Response> {
 			slf4jLogger.info("----end-----");
 		} catch (PermissionDeniedDataAccessException e) {
 			exceptionUtils.PERMISSION_DENIED_DATA_ACCESS_EXCEPTION(response, locale, e);
-		} catch (DataAccessResourceFailureException e) {
+		} catch (DataIntegrityViolationException e) {
+			exceptionUtils.DUPLICATE_KEY_RESOURCE_FAILURE_EXCEPTION(request,response, locale, e);
+	    } 
+		catch (DataAccessResourceFailureException e) {
 			exceptionUtils.DATA_ACCESS_RESOURCE_FAILURE_EXCEPTION(response, locale, e);
 		} catch (DataAccessException e) {
 			exceptionUtils.DATA_ACCESS_EXCEPTION(response, locale, e);
-		} catch (RuntimeException e) {
+		} 
+		
+		catch (RuntimeException e) {
 			exceptionUtils.RUNTIME_EXCEPTION(response, locale, e);
-		} catch (Exception e) {
+			
+		}
+		
+		catch (Exception e) {
 			exceptionUtils.EXCEPTION(response, locale, e);
-		} finally {
+		} 
+		
+		finally {
 			if (response.isHasError() && response.getStatus() != null) {
 				slf4jLogger.info("Erreur| code: {} -  message: {}", response.getStatus().getCode(), response.getStatus().getMessage());
 				throw new RuntimeException(response.getStatus().getCode() + ";" + response.getStatus().getMessage());

@@ -1,5 +1,7 @@
 package ci.patrickbeugre.spring.base.helper;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import org.slf4j.Logger;
@@ -7,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import ci.patrickbeugre.spring.base.helper.contrat.Request;
 import ci.patrickbeugre.spring.base.helper.contrat.Response;
 
 @Component
@@ -17,6 +20,10 @@ public class ExceptionUtils {
 
 	@Autowired
 	private TechnicalError	technicalError;
+	
+	
+	@Autowired
+	private FunctionalError	functionalError;
 
 	public ExceptionUtils() {
 		slf4jLogger = LoggerFactory.getLogger(getClass());
@@ -49,6 +56,25 @@ public class ExceptionUtils {
 		e.printStackTrace();
 		response.setHasError(Boolean.TRUE);
 		response.setStatus(technicalError.DB_FAIL(e.getMessage(), locale));
+		slf4jLogger.warn("Erreur| code: {} -  message: {} - cause: {}  - SysMessage: {}", StatusCode.TECH_DB_FAIL, StatusMessage.TECH_DB_FAIL, e.getCause(), e.getMessage());
+	}
+	
+	/**
+	 * Base de données indisponible car duplicate key
+	 * 
+	 * @param response
+	 * @param locale
+	 * @param e
+	 */
+	public void DUPLICATE_KEY_RESOURCE_FAILURE_EXCEPTION(Request request,Response response, Locale locale, Exception e) {
+		// base de données indisponible
+		e.printStackTrace();
+		List<String> listOfFields =  Arrays.asList("user_name","email");
+		if (e.getMessage().contains(listOfFields.stream().toString())) {
+			response.setStatus(functionalError.DATA_EXIST("", locale));
+		}
+		response.setHasError(Boolean.TRUE);
+		
 		slf4jLogger.warn("Erreur| code: {} -  message: {} - cause: {}  - SysMessage: {}", StatusCode.TECH_DB_FAIL, StatusMessage.TECH_DB_FAIL, e.getCause(), e.getMessage());
 	}
 
